@@ -2,3 +2,35 @@ html{
     margin-left: 16px;
     margin-right: 16px;
 }
+body{
+    color: white;
+    background-color: #A9A9A9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+    h1{
+        font-size: 90px;
+        text-decoration: underline;
+        margin-bottom: 30px;
+    }
+    h2{
+        font-size: 45px;
+    }
+    input{
+        margin-bottom: 25px;
+    }
+    h3{
+        text-decoration: underline;
+        margin-top: 25px;
+        margin-bottom: 5px;
+        font-size: 30px;
+    }
+    p{
+        font-size: 20px;
+        display: flex;
+        width: 350px;
+    }
+
+}

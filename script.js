@@ -5,6 +5,10 @@ let notesTitles = ['Ba', 'Aufgabe'];
 
 let notes = ['banana', 'rasen mähen'];                     // der array ausdem man sich seine Notizen anzeigen lässt
 
+let archivTitles = [];
+
+let archivNotes = [];
+
 let trashNotesTitles = [];
 
 let trashNotes = [];                                       // der array als Papierkorb
@@ -16,7 +20,7 @@ let endNotes = [];
 
 
 function renderNotes() {
-    
+    //getFromLocalStorage(); die function um den inhalt im local storage zu speichern
     let contetnRef = document.getElementById('content');   //  ich muss definieren wo sie anzuzeigen sind
     contetnRef.innerHTML = "";                                       // damit leere ich contentRef (damit man nicht einfach hinzufügt sondern einzelne sachen anzeigen lassen kann)
     for (let indexNote = 0; indexNote < notes.length; indexNote++) {  // eine for Schleife um die Notizen rendern zu lassen
@@ -28,7 +32,7 @@ function renderNotes() {
 
 
 function getNoteTemplate(indexNote) { // eine Function mit welcher wir beschreiben wie das aussehen soll was wir in contentRef darstellen lassen wollen
-    return `<p>+ title: ${notesTitles[indexNote]} -> ${notes[indexNote]}<button onclick="pushToTrash(${indexNote})">X</button></p>`    // wir schreiben also in Java Html code damit wir sagen wir wollen als Wert ein P-tag mit dem einem Inhalt - index (der inhalt aus dem Array welches wir uns über die Schleife ermitteln lassen)      
+    return `<p> title: ${notesTitles[indexNote]} </p> <p>  ${notes[indexNote]}<button onclick="pushToTrash(${indexNote})">X</button><button onclick="pushToArchiv(${indexNote})">A</button></p>`    // wir schreiben also in Java Html code damit wir sagen wir wollen als Wert ein P-tag mit dem einem Inhalt - index (der inhalt aus dem Array welches wir uns über die Schleife ermitteln lassen)      
 }
 
 
@@ -39,8 +43,55 @@ function addNote() {            // eine Function um eine Notiz hinzuzufügen    
     let noteInputRef = document.getElementById('note_input');  // wir ziehen uns die Information woher wir die Eingabe nehmen // diese Eingabe auslesen
     let noteInput = noteInputRef.value;                        // wir setzten den Wert für unsere Variable gleich mit dem Wert aus der erhalteten Information
     notes.push(noteInput);                                     // um den Array notes also den Wert des Input -  Feldes hinzuzufügen 
+    //saveToLocalStorage();                                    // die function um es auch dem local storage hinzuzufügen
+    addNoteTitle();                                            // wir führen die function addNoteTitle aus um auch den title hinzuzufügen
     renderNotes();                                             // nach dem hinzufügen in array müssen wir ja natürlich diese Information auch rendern lassen, durch unsere render function
     noteInputRef.value = "";
+}
+
+// titel hinzufügen
+
+function addNoteTitle() {                                       // eine function um den titel auch hinzuzufügen                              
+    let titleInputRef = document.getElementById('title_input'); // ähnlich wie bei note nehmen wir uns auch die information vom inputfeld
+    let titleInput = titleInputRef.value;                       // die value wird in einer neuen variable gespeichert
+    notesTitles.push(titleInput);                               // wir fügen NotesTitels den werd der Variable zu
+    titleInputRef.value = "";                                   // wir leren danach den value also das input feld wird gecleart
+}
+
+
+//notiz in archiv schieben
+function pushToArchiv(indexNote) {
+    let archivNote = notes.splice(indexNote, 1);
+    archivNotes.push(archivNote[0]);
+    let archivTitle = notesTitles.splice(indexNote, 1);
+    archivTitles.push(archivTitle[0]);
+    renderNotes();
+    renderArchivNotes();
+}
+// eine Function bei der ich aus archiv entferne und in trash schieben kann
+
+function archivToTrash(indexNote) {
+    let archivTrash = archivNotes.splice(indexNote, 1)
+    trashNotes.push(archivTrash[0]);
+    let archivTrashTitle = archivTitles.splice(indexNote, 1)
+    trashNotesTitles.push(archivTrashTitle[0]);
+    renderArchivNotes();
+    renderTrashNotes();
+    
+}
+// ein Archiv anzeigen
+function renderArchivNotes() {
+    let archivContentRef = document.getElementById('archiv');    // wo zeigen wir das Archiv an
+    archivContentRef.innerHTML = "";                             // wir leeren wieder den content ref
+    for (let ArchivNote = 0; ArchivNote < archivNotes.length; ArchivNote++) {
+        archivContentRef.innerHTML += getArchivTemplate(ArchivNote);
+        
+    }
+    
+}
+
+function getArchivTemplate(ArchivNote) {
+    return `<p> title: ${archivTitles[ArchivNote]} </p> <p>  ${archivNotes[ArchivNote]}<button onclick="archivToTrash(${ArchivNote})">X</button></p>`
 }
 
 
@@ -59,6 +110,7 @@ function pushToTrash(indexNote) {     // eine function um eine Notiz zu entferne
 }
 
 
+
 // einen Papierkorb anzeigen
 
 function renderTrashNotes() {
@@ -71,7 +123,7 @@ function renderTrashNotes() {
 }
 
 function getTrashNoteTamplate(indexTrashNote) {                 // die functio um zu sagen was in den TrashNotes angzeigt werden soll --> ist die selbe function wie oben nur das wir sie für was anderes benutzen
-    return `<p>+ title: ${trashNotesTitles[indexTrashNote]} -> ${trashNotes[indexTrashNote]}<button onclick="deleteNote(${indexTrashNote})">X</button></p>`
+    return `<p> title: ${trashNotesTitles[indexTrashNote]} </p> <p> ${trashNotes[indexTrashNote]}<button onclick="deleteNote(${indexTrashNote})">X</button></p>`
 }
 
 // eine function um den Trash nun engültig zu löschen
@@ -89,3 +141,17 @@ function deleteNote(indexTrashNote) {                   // eine function um die 
 
 
 // -> notizen archievieren
+
+function saveToLocalStorage() {                                // eine function um den Inhalt den wir über das input-feld hinzufügen auch dem local storage der seite hinzuzufügen, sodass dies gespeichert wird selbst wenn man die Seite neu lädt
+    localStorage.setItem("notes", JSON.stringify(notes));      // mit dem befehl setzten wir in den local storage zuerst den key + value ein (um arrays als string einzusetzen benutzen wir wie in dem fall JSON.stringify(name des arrays))
+    
+}
+
+
+function getFromLocalStorage() {                               // eine functino um auf den Inhalt im Local Storage zuzugreifen
+    let myARR = JSON.parse(localStorage.getItem("notes"));     // wir haben eine zwischen variable die wir hier myArr nennen, mit getItem kriegen wir die info aus dem Local storage, mit JSON.parse wandel wir den string wieder in ein objekt(in dem fall in ein array)
+    if (myARR !== null) {                                      // eine abfrage das wenn myARR null ist dann wird notes nicht verändert
+        notes = myARR;                                         // wir sagen das notes gleich dem inhalt von der zwischen variable
+    }                                             
+}
+

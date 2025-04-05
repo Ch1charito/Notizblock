@@ -13,11 +13,16 @@
 </head>
 <body onload="renderNotes()">
     <h1>Notizblock</h1>
+    <h2>Title</h2>
+    <input id="title_input" type="text">
+    <h2>Notes</h2>
     <input id="note_input" type="text">
     <button onclick="addNote()">Notiz speichern</button>
-    <h2>Notes</h2>
+    <h3>Notes</h3>
     <div id="content"></div>
-    <h2>Trash</h2>
+    <h3>Archiv</h3>
+    <div id="archiv"></div>
+    <h3>Trash</h3>
     <div id="trash_content"></div>
 </body>
 </html>
